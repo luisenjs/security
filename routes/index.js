@@ -54,6 +54,11 @@ router.post('/login', async function (req, res, next) {
           }
           /* 9.2. Cree la cookie 'username' con la variable user y la configuración de options  */
           res.cookie("username", username, options)
+
+          /* 1. Habilite la sesión */
+          req.session.loggedin = true;
+          req.session.username = username;
+
           /* 10. En caso de éxito, redirija a '/users' */
           res.redirect('/users');
         } else {
@@ -72,6 +77,13 @@ router.post('/login', async function (req, res, next) {
     res.redirect('/');
   }
 
+});
+
+/* GET logout. */
+ /* 2. Método para terminar la sesión */
+ router.get('/logout', function (req, res, next) {
+  req.session.destroy();
+  res.render('index');
 });
 
 module.exports = router;
