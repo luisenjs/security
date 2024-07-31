@@ -33,7 +33,11 @@ router.post('/login', async function (req, res, next) {
       let userData = await models.users.findOne({
         where: {
           name: username
-        }
+        },
+        /*6.1. Incluya todos los modelos asociados */
+        include: { all: true, nested: true },
+        raw: true,
+        nest: true
       })
 
       /* 7. Verifique que userData sea diferente de null, y que userData.password sea diferente de null. */
@@ -59,6 +63,9 @@ router.post('/login', async function (req, res, next) {
           req.session.loggedin = true;
           req.session.username = username;
 
+          /* 2. Agregue el rol del usuario en la sesión */
+          req.session.role = userData.users_roles.roles_idrole_role.name
+
           /* 10. En caso de éxito, redirija a '/users' */
           res.redirect('/users');
         } else {
@@ -80,8 +87,8 @@ router.post('/login', async function (req, res, next) {
 });
 
 /* GET logout. */
- /* 2. Método para terminar la sesión */
- router.get('/logout', function (req, res, next) {
+/* 2. Método para terminar la sesión */
+router.get('/logout', function (req, res, next) {
   req.session.destroy();
   res.render('index');
 });
