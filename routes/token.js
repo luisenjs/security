@@ -3,10 +3,7 @@ var router = express.Router();
 
 var jwt = require('jsonwebtoken');
 
-var token = jwt.sign({
-    exp: Math.floor(Date.now() / 1000) + (60 * 60),
-    data: 'foobar'
-}, 'secret');
+var token = token = jwt.sign({ data: 'foobar' }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
